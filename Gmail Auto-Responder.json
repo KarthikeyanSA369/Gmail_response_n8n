@@ -1,0 +1,186 @@
+{
+  "name": "Gmail Auto-Responder",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -512,
+        96
+      ],
+      "id": "77c53c51-efe5-42db-896b-309cd8464d36",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "uuxg61Svcm7D18fr",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        288
+      ],
+      "id": "48a4f5d3-80d7-4e38-a8f6-4a7fe81f4dcd",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "6NUiW3azctlH5m8g",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "f7ee1165-437a-4a19-9ef9-317a99000dfa",
+              "leftValue": "From",
+              "rightValue": "Angamuthu K <angukarthik2008@gmail.com>",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -288,
+        96
+      ],
+      "id": "224716a7-fc73-4cdd-8f60-99d6c7c664b8",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "angukarthik2008@gmail.com",
+        "subject": "=Re: {{ $json.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.message.content }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        288,
+        96
+      ],
+      "id": "96c6716d-0ee2-4fd8-a0f5-db9ef4d95778",
+      "name": "Send a message",
+      "webhookId": "77405327-7ead-4644-bd67-8402c1b297a3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "uuxg61Svcm7D18fr",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a professional assistant.\n\nReply politely to this email.\n\nSubject:\n{{ $json.subject }}\n\nEmail:\n{{ $json.textPlain }}\n\nGenerate only the reply.",
+        "messages": {
+          "messageValues": []
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -64,
+        96
+      ],
+      "id": "661b1f32-e396-4ecd-83bf-4ee8d1204351",
+      "name": "Basic LLM Chain"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0a60799d-721e-4fed-8c2b-de7349c69d81",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "12abc54cfadfa54d9092f955c64d7d5e03b1ba873aaac6c51388e3ac87c0a8ff"
+  },
+  "id": "HVXx3qgH9m0xJCge",
+  "tags": []
+}
