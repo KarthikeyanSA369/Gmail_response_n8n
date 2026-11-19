@@ -1,8 +1,17 @@
 # Gmail AI Auto-Responder
 
 ### Intelligent Email Processing & Automated Response Generation Using AI and n8n
+# Gmail AI Auto-Responder
+
+### Intelligent Email Processing & Automated Response Generation Using AI and n8n
 
 \<p align="center">   \<strong>Your Inbox. Powered by AI. Automated with Intelligence.\</strong> \</p>
+
+\<p align="center">   An AI-powered Gmail automation system that monitors incoming emails, filters messages using configurable sender conditions, generates intelligent and professional responses using Groq's Llama 3.3 70B model, and automatically delivers replies through Gmail using n8n. \</p>
+
+---
+
+
 
 An AI-powered Gmail automation workflow built using **n8n, Groq API and Llama 3.3 70B**. The system monitors incoming emails, checks configured sender conditions, generates professional responses using an AI language model and sends the generated response through Gmail.
 
